@@ -6,6 +6,8 @@ import Home from "./components/Home";
 import { useEffect } from "react";
 import { getUserAuth } from "./actions";
 import { connect } from "react-redux";
+import Chat from "./components/Chat";
+import Jobs from "./components/Jobs";
 function App(props) {
   useEffect(() => {
     props.getUserAuth();
@@ -21,6 +23,24 @@ function App(props) {
               <>
                 <Header />
                 <Home />
+              </>
+            }
+          ></Route>
+          <Route
+            path="/messages"
+            element={
+              <>
+                <Header />
+                <Chat />
+              </>
+            }
+          ></Route>
+          <Route
+            path="/jobs"
+            element={
+              <>
+                <Header />
+                <Jobs />
               </>
             }
           ></Route>

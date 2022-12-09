@@ -1,8 +1,9 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { signOutAPI } from "../actions";
-
+import { Navigate, useNavigate } from "react-router-dom";
 function Header(props) {
+  const navigator = useNavigate();
   return (
     <Container>
       <Content>
@@ -21,7 +22,13 @@ function Header(props) {
         </Search>
         <Nav>
           <NavListWrap>
-            <NavList className="active">
+            <NavList
+              className="active"
+              onClick={(e) => {
+                e.preventDefault();
+                navigator("/home");
+              }}
+            >
               <a href="">
                 <img src="/images/nav-home.svg" alt=""></img>
                 <span>Home</span>
@@ -33,13 +40,23 @@ function Header(props) {
                 <span>My Network</span>
               </a>
             </NavList>
-            <NavList>
+            <NavList
+              onClick={(e) => {
+                e.preventDefault();
+                navigator("/jobs");
+              }}
+            >
               <a href="">
                 <img src="/images/nav-jobs.svg" alt=""></img>
                 <span>Jobs</span>
               </a>
             </NavList>
-            <NavList>
+            <NavList
+              onClick={(e) => {
+                e.preventDefault();
+                navigator("/messages");
+              }}
+            >
               <a href="">
                 <img src="/images/nav-messaging.svg" alt=""></img>
                 <span>Messages</span>

@@ -58,6 +58,44 @@ export function signOutAPI() {
   };
 }
 
+export function postJobAPI(payload) {
+  return (dispatch) => {
+    dispatch(setLoading(true));
+    if (payload.image !== "") {
+      const storageRef = ref(storage, `images/${payload.image.name}`);
+      const upload = uploadBytesResumable(storageRef, payload.image);
+      upload.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Progress: ${progress}%`);
+          if (snapshot.state === "RUNNING") {
+            console.log(`Progress: ${progress}%`);
+          }
+        },
+        (error) => {
+          console.log(error.code);
+        },
+        async () => {
+          addDoc(collection(db, "articles"), {
+            actor: {
+              poster: payload.user.email,
+              date: payload.timestamp,
+              image: payload.user.photoURL,
+            },
+            comp: payload.company,
+            type: payload.type,
+            location: payload.location,
+            description: payload.description,
+          });
+        }
+      );
+    }
+    dispatch(setLoading(false));
+  };
+}
+
 export function postArticleAPI(payload) {
   return (dispatch) => {
     dispatch(setLoading(true));
@@ -115,6 +153,18 @@ export function getArticlesAPI() {
   return (dispatch) => {
     let payload;
     let q = query(collection(db, "articles"), orderBy("actor.date", "desc"));
+    onSnapshot(q, (snapshot) => {
+      payload = snapshot.docs.map((doc) => doc.data());
+      console.log(payload);
+      dispatch(getArticles(payload));
+    });
+  };
+}
+
+export function getJobsAPI() {
+  return (dispatch) => {
+    let payload;
+    let q = query(collection(db, "jobs"), orderBy("actor.date", "desc"));
     onSnapshot(q, (snapshot) => {
       payload = snapshot.docs.map((doc) => doc.data());
       console.log(payload);
