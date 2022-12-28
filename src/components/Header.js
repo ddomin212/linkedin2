@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { signOutAPI } from "../actions";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 function Header(props) {
   const navigator = useNavigate();
   return (
@@ -14,7 +15,17 @@ function Header(props) {
         </Logo>
         <Search>
           <div>
-            <input type="text" placeholder="Search"></input>
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={(e) => {
+                e.preventDefault();
+                navigator("/search");
+                if (e.target.value === "") {
+                  navigator("/home");
+                }
+              }}
+            ></input>
             <SearchIcon>
               <img src="/images/search-icon.svg" alt="" />
             </SearchIcon>
@@ -23,7 +34,7 @@ function Header(props) {
         <Nav>
           <NavListWrap>
             <NavList
-              className="active"
+              className={window.location.pathname === "/home" ? "active" : ""}
               onClick={(e) => {
                 e.preventDefault();
                 navigator("/home");
@@ -34,13 +45,22 @@ function Header(props) {
                 <span>Home</span>
               </a>
             </NavList>
-            <NavList>
+            <NavList
+              className={
+                window.location.pathname === "/network" ? "active" : ""
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                navigator("/network");
+              }}
+            >
               <a href="">
                 <img src="/images/nav-network.svg" alt=""></img>
                 <span>My Network</span>
               </a>
             </NavList>
             <NavList
+              className={window.location.pathname === "/jobs" ? "active" : ""}
               onClick={(e) => {
                 e.preventDefault();
                 navigator("/jobs");
@@ -52,6 +72,9 @@ function Header(props) {
               </a>
             </NavList>
             <NavList
+              className={
+                window.location.pathname === "/messages" ? "active" : ""
+              }
               onClick={(e) => {
                 e.preventDefault();
                 navigator("/messages");
@@ -62,7 +85,15 @@ function Header(props) {
                 <span>Messages</span>
               </a>
             </NavList>
-            <NavList>
+            <NavList
+              className={
+                window.location.pathname === "/notifications" ? "active" : ""
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                navigator("/notifications");
+              }}
+            >
               <a href="">
                 <img src="/images/nav-notifications.svg" alt=""></img>
                 <span>Notifications</span>
@@ -70,7 +101,12 @@ function Header(props) {
             </NavList>
 
             <User>
-              <a>
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigator("/me");
+                }}
+              >
                 {props.user && props.user.photoURL ? (
                   <img src={props.user.photoURL} alt="" />
                 ) : (
@@ -173,6 +209,11 @@ const NavListWrap = styled.ul`
   flex-wrap: nowrap;
   list-style: none;
   .active {
+    a {
+      img {
+        color: rgba(0, 0, 0, 0.9);
+      }
+    }
     span:after {
       content: "";
       transform: scaleX(1);
@@ -215,6 +256,9 @@ const NavList = styled.li`
   &:active {
     a {
       span {
+        color: rgba(0, 0, 0, 0.9);
+      }
+      img {
         color: rgba(0, 0, 0, 0.9);
       }
     }

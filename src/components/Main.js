@@ -31,7 +31,42 @@ function Main(props) {
   return (
     <>
       {props.articles.length === 0 ? (
-        <p>No articles</p>
+        <Container>
+          <ShareBox>
+            <div>
+              {props.user && props.user.photoURL ? (
+                <img src={props.user.photoURL} />
+              ) : (
+                <img src="/images/user.svg"></img>
+              )}
+              <button onClick={handleClick} disabled={props.loading}>
+                Start a post
+              </button>
+            </div>
+            <div>
+              <button>
+                <img src="/images/photo-icon.svg" alt="" />
+                <span>Photo</span>
+              </button>
+
+              <button>
+                <img src="/images/video-icon.svg" alt="" />
+                <span>Video</span>
+              </button>
+
+              <button>
+                <img src="/images/event-icon.svg" alt="" />
+                <span>Event</span>
+              </button>
+
+              <button>
+                <img src="/images/article-icon.svg" alt="" />
+                <span>Write article</span>
+              </button>
+            </div>
+          </ShareBox>
+          <PostModal showModal={showModal} handleClick={handleClick} />
+        </Container>
       ) : (
         <Container>
           <ShareBox>
@@ -92,7 +127,11 @@ function Main(props) {
                   <Descritpion>{article.description}</Descritpion>
                   <SharedImg>
                     {!article.sharedImg && article.video ? (
-                      <ReactPlayer width={"100%"} url={article.video} />
+                      <ReactPlayer
+                        width={"100%"}
+                        url={article.video}
+                        playing={false}
+                      />
                     ) : (
                       <img src={article.sharedImg} alt="" />
                     )}
@@ -141,6 +180,7 @@ const CommonCard = styled.div`
   margin-bottom: 8px;
   background-color: #fff;
   border-radius: 5px;
+  max-width: 1152px;
   position: relative;
   border: none;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 15%), 0 0 0 rgb(0 0 0 / 20%);
@@ -263,14 +303,13 @@ const Descritpion = styled.div`
 `;
 const SharedImg = styled.div`
   margin-top: 8px;
-  width: 100%;
+  max-width: 100%;
   display: block;
   position: relative;
   background-color: #f9fafb;
   img {
     object-fit: contain;
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
   }
 `;
 const SocialCounts = styled.ul`

@@ -2,12 +2,13 @@ import styled from "styled-components";
 import Left from "./Left";
 import Main from "./Main";
 import Right from "./Right";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 function Home(props) {
+  const navigator = useNavigate();
   return (
     <Container>
-      {!props.user && <Navigate to="/"></Navigate>}
+      {!props.user && navigator("/")}
       <Section>
         <h5>
           <a href="">Hiring in a hurry?</a>
@@ -17,7 +18,6 @@ function Home(props) {
         </p>
       </Section>
       <Layout>
-        <Left></Left>
         <Main></Main>
         <Right></Right>
       </Layout>
@@ -62,8 +62,8 @@ const Section = styled.div`
 
 const Layout = styled.div`
   display: grid;
-  grid-template-areas: "leftside main rightside";
-  grid-template-columns: minmax(0, 5fr), minmax(0, 12fr), minmax(300px, 7fr);
+  grid-template-areas: "lp main rightside rp";
+  grid-template-columns: 25px, minmax(0, 12fr), minmax(300px, 7fr), 25px;
   column-gap: 25px;
   row-gap: 25px;
   margin: 25px;

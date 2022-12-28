@@ -4,10 +4,21 @@ import { connect } from "react-redux";
 import { postJobAPI } from "../actions";
 import { Timestamp } from "firebase/firestore";
 function JobModal(props) {
+  const [position, setPosition] = useState();
   const [editorText, setEditorText] = useState();
   const [company, setCompany] = useState();
   const [location, setLocation] = useState();
   const [type, setType] = useState();
+  const [shareImage, setShareImage] = useState();
+
+  const handleChange = (e) => {
+    const image = e.target.files[0];
+    if (image === "" || image === undefined) {
+      alert(`not an image, the file is a ${typeof image}`);
+      return;
+    }
+    setShareImage(image);
+  };
 
   const postJob = (e) => {
     e.preventDefault();
@@ -15,12 +26,14 @@ function JobModal(props) {
       return;
     }
     const payload = {
+      image: shareImage,
       company: company,
       location: location,
       type: type,
       user: props.user,
       description: editorText,
       timestamp: Timestamp.now(),
+      position: position,
     };
     props.postJob(payload);
     reset(e);
@@ -56,6 +69,12 @@ function JobModal(props) {
               </UserInfo>
               <Editor>
                 <input
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                  placeholder="Position"
+                  autoFocus={true}
+                />
+                <input
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder="Name of your company"
@@ -74,8 +93,24 @@ function JobModal(props) {
                 <textarea
                   value={editorText}
                   onChange={(e) => setEditorText(e.target.value)}
-                  placeholder="What's on your mind?"
+                  placeholder="Job description..."
                 />
+                <UploadImage>
+                  <input
+                    type="file"
+                    accept="image/gif, image/jpeg, image/png"
+                    name="image"
+                    id="file"
+                    style={{ display: "none" }}
+                    onChange={handleChange}
+                  />
+                  <p>
+                    <label htmlFor="file">Select your company logo</label>
+                  </p>
+                  {shareImage && (
+                    <img src={URL.createObjectURL(shareImage)} alt="" />
+                  )}
+                </UploadImage>
               </Editor>
             </SharedContent>
             <SharedCreation>
@@ -117,6 +152,23 @@ const Content = styled.div`
   flex-direction: column;
   top: 32px;
   margin: 0 auto;
+`;
+const AssetButton = styled.button`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  min-width: auto;
+  color: rgba(0, 0, 0, 0.5);
+  span {
+    margin-left: 5px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+`;
+const AttachAssets = styled.div`
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
 `;
 const Header = styled.div`
   display: block;
@@ -172,6 +224,12 @@ const SharedCreation = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 12px 24px 12px 16px;
+`;
+const UploadImage = styled.div`
+  text-align: center;
+  img {
+    width: 25%;
+  }
 `;
 const PostButton = styled.button`
   min-width: 60px;
